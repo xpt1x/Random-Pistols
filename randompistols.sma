@@ -32,7 +32,7 @@ public hamSpawn(id)
 
 	new i = random_num(0, sizeof pistols -1)
 	sendItem(id, pistols[i][pisName], pistols[i][pisAmmo])
-	client_print_color(id, 0, "[^4RANDOM PISTOLS^1] Your ^3Free ^1Pistol ^1is ^3: ^4%s", pistols[i][displayN])
+	ColorPrint(id, "[^4RANDOM PISTOLS^1] Your ^3Free ^1Pistol ^1is ^3: ^4%s", pistols[i][displayN])
 	return 0;
 }
 
@@ -53,4 +53,29 @@ stock sendItem(id, weapName[], ammoNum)
 	fm_give_item(id, weapName);
 	cs_set_user_bpammo(id, curId, ammoNum);
 	return 1;
+}
+
+stock ColorPrint(const id, const input[], any:...) 
+{ 
+	new count = 1, players[32]; 
+	static msg[191]; 
+	vformat(msg, 190, input, 3); 
+
+	replace_all(msg, 190, "^4", "^x04");
+	replace_all(msg, 190, "^1", "^x01");
+	replace_all(msg, 190, "^3", "^x03");
+
+	if (id) players[0] = id; else get_players(players, count, "ch"); 
+	{ 
+		for (new i = 0; i < count; i++) 
+		{ 
+			if (is_user_connected(players[i])) 
+			{ 
+				message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("SayText"), _, players[i]); 
+				write_byte(players[i]); 
+				write_string(msg); 
+				message_end(); 
+			} 
+		} 
+	} 
 }
